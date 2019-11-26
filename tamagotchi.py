@@ -103,7 +103,7 @@ class Pet:
         print("\nName: %s, Age: %d, Hunger: %d, Thirst: %d, Happiness: %d, Death: %d" % (self.name, self.age, self.hunger, self.thirst, self.happy, self.death))
 
     def whenUserisgone(self,time):
-        timegone = int((time - self.timeHours) / 3600)
+        timegone = int((time - self.hours) / 3600)
         self.feed(-timegone)
         self.water(-timegone)
         self.happiness(-timegone)

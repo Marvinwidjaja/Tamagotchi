@@ -4,7 +4,7 @@ import sys
 
 
 class Pet:
-    def __init__(self, name, age, happy, hunger, thirst, death, time):
+    def __init__(self, name, age, happy, hunger, thirst, death, time, hours):
         self.name = name
         self.age = age
         self.happy = happy
@@ -13,6 +13,7 @@ class Pet:
         self.death = death
         self.dead = False
         self.time = time
+        self.hours= hours
 
     def die(self, ouch):
         self.death += ouch
@@ -101,46 +102,79 @@ class Pet:
     def status(self):
         print("\nName: %s, Age: %d, Hunger: %d, Thirst: %d, Happiness: %d, Death: %d" % (self.name, self.age, self.hunger, self.thirst, self.happy, self.death))
 
-def playGame(thePet):
-        choice= 1
-        while (choice != 0):
-            try:
-                theTime = int(time.time())
-                choice = int(input("What would you like to do?\n0 Quit, 1 Play, 2 Feed, 3 Water, 4 Punch, 5 Status: "))
-                thePet.randomBehavior()
-                if (choice == 0):
-                    sys.exit()
-                if (choice == 1):
-                    thePet.play(25, 10)
-                if (choice == 2):
-                    thePet.feed(20)
-                if (choice == 3):
-                    thePet.water(20)
-                if (choice == 4):
-                    thePet.punch(10)
-                if (choice == 5):
-                    thePet.status()
-                if (thePet.die(0)):
-                    print("You killed" + self.name +"...!!!")
-                    main()
-                if (thePet.ageUp(int(time.time()))):
-                    print("%s is now a year older! It is %d years old!" % (thePet.getName(), thePet.getAge()))
-                thePet.happiness(-5)
-                thePet.feed(-5)
-                thePet.water(-5)
-                print()
+    def whenUserisgone(self,time):
+        timegone = int((time - self.timeHours) / 3600)
+        self.feed(-timegone)
+        self.water(-timegone)
+        self.happiness(-timegone)
+    def savegame(self,time):
+        saveFile = open(self.name + ".pet", 'w')
+        saveFile.write(
+                self.name + " " + str(self.age) + " " +
+                str(self.hunger) + " " + str(self.thirst) + " " +
+                str(self.happy) + " " + str(self.death) + " " +
+                str(self.time) + " " + str(time))
+        saveFile.close
 
-            except:
-                print()
+def playGame(thePet):
+    choice= 1
+    while (choice != 0):
+        try:
+            theTime = int(time.time())
+            choice = int(input("What would you like to do?\n0 Quit, 1 Play, 2 Feed, 3 Water, 4 Punch, 5 Status: "))
+            thePet.randomBehavior()
+            if (choice == 0):
+                sys.exit()
+            if (choice == 1):
+                thePet.play(25, 10)
+            if (choice == 2):
+                thePet.feed(20)
+            if (choice == 3):
+                thePet.water(20)
+            if (choice == 4):
+                thePet.punch(10)
+            if (choice == 5):
+                thePet.status()
+            if (thePet.die(0)):
+                print("You killed" + self.name +"...!!!")
+                main()
+            if (thePet.ageUp(int(time.time()))):
+                print("%s is now a year older! It is %d years old!" % (thePet.getName(), thePet.getAge()))
+            thePet.happiness(-5)
+            thePet.feed(-5)
+            thePet.water(-5)
+            thePet.savegame(int(time.time()))
+            print()
+
+        except:
+            print()
 
 def newPet(petName):
-        newPet = Pet(petName.replace(' ', '_'), 0, 50, 20, 20, 0, int(time.time()))
-        return newPet
+    newPet = Pet(petName.replace(' ', '_'), 0, 50, 20, 20, 0, int(time.time()), int(time.time()))
+    return newPet
 
-
+def loadgame(petName):
+    petInfo = open(petName.replace(' ', '_') + ".pet", 'r')
+    petList = petInfo.read()
+    petList = petList.split(' ')
+    newPet = Pet(petList[0], int(petList[1]), int(petList[2]), int(petList[3]), int(petList[4]), int(petList[5]),
+                 int(petList[6]), int(petList[7]))
+    newPet.whenUserisgone(int(time.time()))
+    playGame(newPet)    
 def main():
-    newgame= input("What would you name your new pet?")
-    playGame(newPet(newgame))
+    try:
+        choice=int(input("Would you like create a new Pet or load saved pet? (0, 1) "))
+        if(choice==1):
+            petName = input("What is the name of your saved pet? ")
+            loadgame(petName)
+        if(choice==0):
+            petName = input("What would you name your new pet? ")
+            playGame(newPet(petName))
+        else:
+            main()
+    except:
+        main()
+
 
 if __name__ == "__main__":
     main()

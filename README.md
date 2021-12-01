@@ -1,2 +1,2 @@
-# python1stProject
-Simple Tamagotchi Game
+# Tamagotchi
+Simple Tamagotchi Game with Python Tkinter
